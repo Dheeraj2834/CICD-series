@@ -79,3 +79,107 @@ node {
         }
     }
 }
+
+
+#with manual approvale example 
+
+node {
+
+    stage('git checkout') {
+        git branch: 'main',
+            url: 'https://github.com/CloudTechDevOps/Terraform-0730am.git'
+    }
+
+    stage('init') {
+        dir('Day-1-Terraform-basic-config') {
+            sh 'terraform init'
+        }
+    }
+
+    stage('plan') {
+        dir('Day-1-Terraform-basic-config') {
+            sh 'terraform plan'
+        }
+    }
+
+    stage('approval') {
+        input 'Do you want to apply the changes?'
+    }
+
+    stage('apply') {
+        dir('Day-1-Terraform-basic-config') {
+            sh 'terraform apply -auto-approve'
+        }
+    }
+}
+
+
+
+
+## init, pla,fmt,apply
+
+node {
+
+    try {
+
+        stage('Checkout') {
+            git branch: 'main',
+                url: 'https://github.com/CloudTechDevOps/Terraform-0730am.git'
+        }
+
+        stage('Init') {
+            dir('Day-1-Terraform-basic-config') {
+                sh 'terraform init'
+            }
+        }
+
+        stage('Validate') {
+            dir('Day-1-Terraform-basic-config') {
+                sh 'terraform validate'
+            }
+        }
+
+        stage('Fmt Check') {
+            dir('Day-1-Terraform-basic-config') {
+                sh 'terraform fmt -check'
+            }
+        }
+
+        stage('Plan') {
+            dir('Day-1-Terraform-basic-config') {
+                sh 'terraform plan'
+            }
+        }
+
+        stage('Approval') {
+            input 'Approve Terraform Apply?'
+        }
+
+        stage('Apply') {
+            dir('Day-1-Terraform-basic-config') {
+                sh 'terraform apply -auto-approve'
+            }
+        }
+
+        echo "Infrastructure provisioned successfully"
+
+    } catch(Exception e) {
+
+        echo "Terraform deployment failed"
+        throw e
+
+    }
+}
+
+
+
+### run on specific label
+
+node('dev') {
+
+    stage('git checkout') {
+        git branch: 'main',
+            url: 'https://github.com/CloudTechDevOps/Terraform-0730am.git'
+    }
+
+}
