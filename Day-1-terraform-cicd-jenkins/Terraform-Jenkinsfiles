@@ -221,7 +221,76 @@ pipeline {
 }
 
 
+## Exmample init,validate, fmt, plan, approve 
 
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/CloudTechDevOps/Terraform-0730am.git'
+            }
+        }
+
+        stage('Init') {
+            steps {
+                dir('Day-1-Terraform-basic-config') {
+                    sh 'terraform init'
+                }
+            }
+        }
+
+        stage('Validate') {
+            steps {
+                dir('Day-1-Terraform-basic-config') {
+                    sh 'terraform validate'
+                }
+            }
+        }
+
+        stage('Fmt Check') {
+            steps {
+                dir('Day-1-Terraform-basic-config') {
+                    sh 'terraform fmt -check'
+                }
+            }
+        }
+
+        stage('Plan') {
+            steps {
+                dir('Day-1-Terraform-basic-config') {
+                    sh 'terraform plan'
+                }
+            }
+        }
+
+        stage('Approval') {
+            steps {
+                input 'Approve Terraform Apply?'
+            }
+        }
+
+        stage('Apply') {
+            steps {
+                dir('Day-1-Terraform-basic-config') {
+                    sh 'terraform apply -auto-approve'
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Infrastructure provisioned successfully'
+        }
+
+        failure {
+            echo 'Terraform deployment failed'
+        }
+    }
+}
 
 # Examaple with lable pipeline
 pipeline {
