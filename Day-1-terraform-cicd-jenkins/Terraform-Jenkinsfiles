@@ -366,3 +366,67 @@ pipeline {
         }
     }
 }
+
+
+# Specif directory inside the repo
+pipeline {
+    agent any
+
+    parameters {
+        choice(
+            name: 'ACTION',
+            choices: ['Apply', 'Destroy'],
+            description: 'Select the Terraform action'
+        )
+    }
+
+    stages {
+        stage('Git Clone') {
+            steps {
+                git branch: 'main', url: 'https://github.com/CloudTechDevOps/1030-terraform-practice.git'
+            }
+        }
+
+        stage('Terraform Init') {
+            steps {
+                dir('Day-2-terraform-configurtions') {
+                 sh 'terraform init'
+                }
+            }
+        }
+
+        stage('Terraform Plan') {
+            when {
+                expression { params.ACTION == 'Apply' }
+            }
+            steps {
+                dir('Day-2-terraform-configurtions') {
+                sh 'terraform plan -out=tfplan'
+                }
+            }
+        }
+
+        stage('Approval') {
+            steps {
+                input(
+                    message: "You selected ${params.ACTION}. Continue?",
+                    ok: "Proceed"
+                )
+            }
+        }
+
+        stage('Execute') {
+            steps {
+                script {
+                    if (params.ACTION == 'Apply') {
+                        dir('Day-2-terraform-configurtions') {
+                        sh 'terraform apply -auto-approve tfplan'
+                         }
+                    } else {
+                        sh 'terraform destroy -auto-approve'
+                    }
+                }
+            }
+        }
+    }
+}
