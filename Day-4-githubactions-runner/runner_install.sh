@@ -1,6 +1,7 @@
 # 1. Update OS and install dependencies
 sudo yum update -y
 sudo yum install -y git curl tar gzip
+sudo dnf install libicu -y
 
 # 2. Create directory
 mkdir actions-runner && cd actions-runner
