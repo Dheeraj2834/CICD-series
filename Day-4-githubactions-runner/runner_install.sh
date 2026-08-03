@@ -7,11 +7,11 @@ sudo dnf install libicu -y
 mkdir actions-runner && cd actions-runner
 
 # 3. Download runner
-curl -o actions-runner.tar.gz -L https://github.com/actions/runner/releases/latest/download/actions-runner-linux-x64.tar.gz
-tar xzf ./actions-runner.tar.gz
+curl -o actions-runner-linux-x64-2.336.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.336.0/actions-runner-linux-x64-2.336.0.tar.gz
+tar xzf ./actions-runner-linux-x64-2.336.0.tar.gz
 
 # 4. Configure runner (from GitHub UI)
-./config.sh --url https://github.com/username/repo --token YOUR_TOKEN --labels amazonlinux,dev --name ec2-runner
+./config.sh --url https://github.com/CloudTechDevOps/github-actions-tf --token BDB5WAUDP46LWV7D4GSS6KTKOB4G2 --labels amazonlinux,dev --name ec2-runner
 
 # 5. Start runner
 ./run.sh &
